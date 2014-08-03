@@ -11,6 +11,15 @@ var users = require('./routes/user');
 
 var app = express();
 
+// Import Config Settings 
+var config = require('./config')();
+
+http.createServer(app).listen(config.port, function(){
+    console.log('Express server listening on port ' + config.port);
+});
+
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
