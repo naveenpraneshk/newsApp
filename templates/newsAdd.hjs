@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Add News Post</title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body class="admin">
+		<div class="container">
+			{{{message}}}
+			<hr />
+			
+			<div class="left form-column">
+				<form method="post" action="/news/create" name="add_news"> 
+
+				News Title :  <input type="text" name="title" />
+				<br/>
+				News Content: <input type="text" name="content" />
+				<input type="submit" value = "submit">
+				</form>
+			</div>
+			<br class="clear" />
+			<hr />
+		</div>
+	</body>
+</html>
