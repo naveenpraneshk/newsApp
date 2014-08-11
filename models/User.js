@@ -24,8 +24,9 @@ var User = {
 		this.collection().find(query || {}).toArray(callback);
 	},
 	find: function(callback, ID) {
-		console.log(ID)
-		this.collection().find(ID).toArray(callback);
+		console.log("find "+ID)
+
+		this.collection().find({user_id:8}).toArray(callback);
 
 	},
 	
@@ -59,7 +60,7 @@ var User = {
             	//console.log(err + ' hello1 ' + rec);
             		self.db.collection('counters').find({_id : 'user'},
             			 function(err,rec){ 
-            			 	rec.toArray(function(err, rec){console.log(rec); data.news_id = rec[0]["seq"]; callback(data);}
+            			 	rec.toArray(function(err, rec){console.log(rec); data.user_id = rec[0]["seq"]; callback(data);}
     )
             			 }
 

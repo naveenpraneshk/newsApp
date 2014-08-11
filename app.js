@@ -5,18 +5,20 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var exphbs  = require('express-handlebars');
 var routes = require('./routes');
 var User = require('./controllers/User');
-var newsPost  = require('./controllers/NewsPost')
+var newsPost  = require('./controllers/NewsPost');
+var comment  = require('./controllers/Comment');
 
 var app = express();
 var View = require("./views/Base");
 
 
 // view engine setup
-app.set('views', path.join(__dirname, 'templates'));
-app.set('view engine', 'hjs');
+
+app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
+app.set('view engine', 'handlebars');
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -72,7 +74,7 @@ MongoClient.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port +
     } else {
         var attachDB = function(req, res, next) {
             console.log("attachDB");
-            console.log(db)
+            //console.log(db)
             req.db = db;
             next();
         };
@@ -80,10 +82,10 @@ MongoClient.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port +
         // check for counters whether they are set or not
         
 
-        app.get('/', routes.index);
+        
         
         app.get('/news/add', attachDB, function(req, res, next){
-            console.log("Hello")
+            
             newsPost.newsForm(req, res, next)
         });
         app.post('/news/:id/addComment', attachDB, function( req, res, next){
@@ -93,7 +95,7 @@ MongoClient.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port +
         });
         app.post('/news/create', attachDB, function( req, res, next){
             console.log("adding Post")
-            console.log(req.body + "--Over")
+            //console.log(req.body + "--Over")
             newsPost.add(req, res, next)
 
 
@@ -105,7 +107,9 @@ MongoClient.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port +
             v.render();
         });
 
-
+        app.get('/users/:id', attachDB, function(req, res, next){
+            User.run(req, res, next);
+        });
         app.post('/sign_up',attachDB, function(req, res, next){
             User.create(req, res, next);
         });
@@ -123,10 +127,30 @@ MongoClient.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port +
             newsPost.view(req, res, next);
         });
 
-        app.all('/news', attachDB, function(req, res, next) {
-            newsPost.run(req, res, next);
+        app.all('/new', attachDB, function(req, res, next) {
+            newsPost.run(req, res, next, 'news');
         });
-          
+        
+        app.all('/ask', attachDB, function(req, res, next) {
+            newsPost.run(req, res, next, 'ask');
+        });
+
+        app.all('/jobs', attachDB, function(req, res, next) {
+            newsPost.run(req, res, next, 'jobs');
+        });
+
+        app.all('/show', attachDB, function(req, res, next) {
+            newsPost.run(req, res, next, 'show');
+        });
+
+
+        app.get('/', attachDB, function(req, res, next) {
+            console.log(req.session);
+            newsPost.run(req, res, next, 'index');
+        });
+          app.get('/comments', attachDB, function(req, res, next) {
+            comment.run(req, res, next);
+        });
 
         http.createServer(app).listen(config.port, function(){
             console.log('Express server listening on port ' + config.port);

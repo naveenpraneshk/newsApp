@@ -4,8 +4,8 @@ crypto = require("crypto");
 
 var NewsPost = {
 	name: 'NewsPost',
-	news_id: 0,
-	likes: 0,
+	
+
 	setDB: function(db) {
 		this.db = db;
 	},
@@ -18,7 +18,7 @@ var NewsPost = {
 	update: function(data, callback) {
 		this.collection().update({ID: data.ID}, data, {}, callback || function(){ });	
 	},
-	getlist: function(callback, query) {
+	getlist: function(callback, query, sortQuery) {
 		this.collection().find(query || {}).toArray(callback);
 	},
 	find: function(callback, ID) {
@@ -49,11 +49,22 @@ var NewsPost = {
 	addComment:function(data, callback) {
 		
 		console.log("Adding Comment")
+		var self = this;
+		this.db.collection('comments').insert(data, {}, function(err,rec){ 
+			self.collection('news').update({news_id:41}, {$inc: {comments:1}},function(err, rec){
+			
+			callback();
+			});	
+			
+
+		});
+
 		
-		this.db.collection('comments').insert(data, {}, callback || function(){ });
+		
+		
 	},
 
-	nextSequence:function(data,callback){
+	nextSequence:function(data ,callback){
 			console.log("cominghere")
 			var self = this;
   	 this.db.collection('counters').findAndModify(

@@ -1,0 +1,22 @@
+
+
+    <div class="news-container">
+    	
+    		<div class="news">
+					<ol>
+					{{#newsArticles}}
+						<li>
+							<span class="news-line"><a href="/news/{{news_id}}">{{title}}{{news_id}}</span>
+							 <span class="news-line">(<a href="{{url}}">{{url}}</a>)</span><br/>
+							 <span class="news-points"> {{points}} by {{user_id}} <a href='#'>naveen</a></span>
+							 <span class="news-comments"> {{comments}} comments | {{created_at}} </span>
+							</li>
+							{{/newsArticles}}
+						</ol>
+    			</div>
+    		</div>
+    	
+
+
+
+  
